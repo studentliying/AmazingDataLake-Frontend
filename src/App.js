@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.css';
-import HomePage from './HomePage/HomePage';
-import { HashRouter as Router, Route } from "react-router-dom";
+import HomePage from './Views/HomePage/HomePage';
+import {  BrowserRouter as Router , Route } from "react-router-dom";
 import {Switch} from "react-router";
 import './App.css';
 
