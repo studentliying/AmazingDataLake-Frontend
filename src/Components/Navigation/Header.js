@@ -36,7 +36,6 @@ class CustomHeader extends React.Component {
             </span>
           </Menu.Item>
         </Menu>
-
     )}
 }
 
