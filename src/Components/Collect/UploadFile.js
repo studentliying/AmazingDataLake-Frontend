@@ -13,6 +13,8 @@ class UploadFile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      header:[],
+      data:[]
     };
   }
 
@@ -22,17 +24,34 @@ class UploadFile extends React.Component {
     }
     if (info.file.status === 'done') {
       message.success(`${info.file.name} 上传成功`);
+
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} 上传失败`);
     }
   };
 
+
   getTextInfo = (file) => {
     const reader = new FileReader();
     reader.readAsText(file, "gb2312");
-    reader.onload = (result) =>{
-      let targetNum=result.target.result;
-      console.log(targetNum);
+    reader.onload = (result) => {
+      let targetNum = result.target.result;
+      let csvarry = targetNum.split("\r\n");
+      let datas = [];
+      let headers = csvarry[0].split(",");
+      for (let i = 1; i < csvarry.length; i++) {
+        let data = {};
+        let temp = csvarry[i].split(",");
+        for (let j = 0; j < temp.length; j++) {
+          data[headers[j]] = temp[j];
+        }
+        datas.push(data);
+      }
+      this.props.passMetadata(headers, datas);
+      this.setState({
+        header: headers,
+        data: datas,
+      })
     };
     return true;
   };

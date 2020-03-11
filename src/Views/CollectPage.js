@@ -6,15 +6,29 @@ import {Layout,  Breadcrumb, Row, Col, Card} from 'antd';
 import { Link } from "react-router-dom";
 import Sidebar from '../Components/Navigation/Sidebar.js';
 import CustomHeader from '../Components/Navigation/Header.js';
-import UploadFile from '../Components/File/UploadFile.js';
+import UploadFile from '../Components/Collect/UploadFile.js';
+import ExtractMeta from '../Components/Collect/ExtractMeta.js';
 
 const {Footer, Content, Sider} = Layout;
 
 class CollectPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      header:[],
+      data:[]
+    };
   }
+
+  setMetadata = (header, data)=> {
+    let new_header =  header.filter(function (s) {
+      return s && s.trim();
+    });
+    this.setState({
+      header: Array.from(new Set(this.state.header.concat(new_header))),
+    });
+    this.state.data.concat(data);
+  };
 
   render(){
     return(
@@ -35,14 +49,11 @@ class CollectPage extends React.Component {
               <Row>
                 <Col span={1} />
                 <Col span={8} >
-                  <UploadFile/>
+                  <UploadFile passMetadata={(header, data)=> {this.setMetadata(header, data)}}/>
                 </Col>
                 <Col span={1} />
                 <Col span={12} >
-                  <Card title="元数据抽取"
-                        headStyle={{backgroundColor:"#d6e4ff", fontSize:'20px', fontWeight:'700'}}
-                        bodyStyle={{backgroundColor:"#f0f5ff"}}>
-                  </Card>
+                  <ExtractMeta parentHeader={this.state.header} parentData={this.state.data}/>
                 </Col>
               </Row>
             </Content>
