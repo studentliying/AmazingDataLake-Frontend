@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import {Checkbox, Button, Card} from 'antd';
+import {server} from '../../Utils/Constant';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -18,6 +19,7 @@ class ExtractMeta extends React.Component {
   }
 
   onChange = checkedList => {
+    console.log(checkedList);
     this.setState({
       checkedList,
       indeterminate: !!checkedList.length && checkedList.length < this.props.parentHeader.length,
@@ -31,6 +33,20 @@ class ExtractMeta extends React.Component {
       indeterminate: false,
       checkAll: e.target.checked,
     });
+  };
+
+  handleButtonClick = () => {
+    console.log("hi");
+    fetch(server + "/rdf/save" , {
+      method: 'GET',
+      mode: 'cors'
+    })
+      .then(function (response) {
+        console.log("response: ", response);
+      })
+      .then(function (result) {
+        console.log("result: ", result);
+      })
   };
 
   render(){
@@ -61,7 +77,7 @@ class ExtractMeta extends React.Component {
           <br />
           {
             this.props.parentHeader.length > 0 ?
-                <Button>确定抽取</Button> : null
+                <Button onClick={this.handleButtonClick}>确定抽取</Button> : null
           }
         </Card>
     )}
