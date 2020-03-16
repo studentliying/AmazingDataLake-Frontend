@@ -11,7 +11,7 @@ class ExtractMeta extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      checkedList: this.props.parentHeader,
+      checkedList: [],
       indeterminate: true,
       checkAll: false,
     };
@@ -35,8 +35,38 @@ class ExtractMeta extends React.Component {
     });
   };
 
+
   handleButtonClick = () => {
     console.log("hi");
+    let body = [];
+    let userChoiceIndex = 0;
+    let parentHeaderLength = this.props.parentHeader.length;
+    for (let i = 0; i < parentHeaderLength; i++) {
+      let title = this.props.parentHeader[i];
+      let flag = false;
+      for (let j = userChoiceIndex; j <= i; j ++) {
+        if(j < this.state.checkedList.length && this.state.checkedList[j] === title) {
+          let body_item = {
+            "id": i,
+            "name": title,
+            "exist": true
+          };
+          body.push(body_item);
+          userChoiceIndex ++;
+          flag = true;
+        }
+      }
+      if (!flag) {
+        let body_item = {
+          "id": i,
+          "name": title,
+          "exist": false
+        };
+        body.push(body_item);
+      }
+
+    }
+    console.log(body);
     fetch(server + "/rdf/save" , {
       method: 'GET',
       mode: 'cors'
