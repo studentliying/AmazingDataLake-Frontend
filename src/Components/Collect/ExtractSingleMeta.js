@@ -7,7 +7,7 @@ import {server} from '../../Utils/Constant';
 
 const CheckboxGroup = Checkbox.Group;
 
-class ExtractMeta extends React.Component {
+class ExtractSingleMeta extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,39 +37,46 @@ class ExtractMeta extends React.Component {
 
 
   handleButtonClick = () => {
-    console.log("hi");
-    let body = [];
-    let userChoiceIndex = 0;
-    let parentHeaderLength = this.props.parentHeader.length;
-    for (let i = 0; i < parentHeaderLength; i++) {
-      let title = this.props.parentHeader[i];
-      let flag = false;
-      for (let j = userChoiceIndex; j <= i; j ++) {
-        if(j < this.state.checkedList.length && this.state.checkedList[j] === title) {
-          let body_item = {
-            "id": i,
-            "name": title,
-            "exist": true
-          };
-          body.push(body_item);
-          userChoiceIndex ++;
-          flag = true;
-        }
+    console.log(this.props.parentData);
+    let body_header = [];
+    // let userChoiceIndex = 0;
+    // let parentHeaderLength = this.props.parentHeader.length;
+    // for (let i = 0; i < parentHeaderLength; i++) {
+    //   let title = this.props.parentHeader[i];
+    //   let flag = false;
+    //   for (let j = userChoiceIndex; j <= i; j ++) {
+    //     if(j < this.state.checkedList.length && this.state.checkedList[j] === title) {
+    //       let body_item = {
+    //         "id": i,
+    //         "name": title,
+    //         "exist": true
+    //       };
+    //       body_header.push(body_item);
+    //       userChoiceIndex ++;
+    //       flag = true;
+    //     }
+    //   }
+    //   if (!flag) {
+    //     let body_item = {
+    //       "id": i,
+    //       "name": title,
+    //       "exist": false
+    //     };
+    //     body_header.push(body_item);
+    //   }
+    //
+    // }
+    let body = {
+      "body_header": this.state.checkedList,
+      "body_data": this.props.parentData
+    };
+    fetch(server + "/rdf/save_csv" , {
+      method: 'POST',
+      body: JSON.stringify(body),
+      mode: 'cors',
+      header:{
+        contentType:"application/json"
       }
-      if (!flag) {
-        let body_item = {
-          "id": i,
-          "name": title,
-          "exist": false
-        };
-        body.push(body_item);
-      }
-
-    }
-    console.log(body);
-    fetch(server + "/rdf/save" , {
-      method: 'GET',
-      mode: 'cors'
     })
       .then(function (response) {
         console.log("response: ", response);
@@ -113,4 +120,4 @@ class ExtractMeta extends React.Component {
     )}
 }
 
-export default ExtractMeta;
+export default ExtractSingleMeta;

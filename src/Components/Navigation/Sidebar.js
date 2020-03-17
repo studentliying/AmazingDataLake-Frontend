@@ -66,7 +66,7 @@ class Sidebar extends React.Component {
           &nbsp;&nbsp;&nbsp;
           <span style={{ fontSize:'20px', fontWeight:'700', color:'#030852'}}>状态监控</span>
         </Menu.Item>
-        <h1 style={{ height:'100px'}}/>
+        <h1 style={{ height:'300px'}}/>
       </Menu>
     );
   }

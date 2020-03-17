@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import Sidebar from '../Components/Navigation/Sidebar.js';
 import CustomHeader from '../Components/Navigation/Header.js';
 import UploadFile from '../Components/Collect/UploadFile.js';
-import ExtractMeta from '../Components/Collect/ExtractMeta.js';
+import ExtractSingleMeta from '../Components/Collect/ExtractSingleMeta.js';
+import ExtractMultiMeta from "../Components/Collect/ExtractMultiMeta.js";
 
 const {Footer, Content, Sider} = Layout;
 
@@ -16,18 +17,42 @@ class CollectPage extends React.Component {
     super(props);
     this.state = {
       header:[],
-      data:[]
+      data:[],
+      tab_key: 1,
+      tables:[],
+      columns:[],
     };
   }
 
+  setTabKey = (key) => {
+    this.setState({
+      tab_key: key
+    })
+  };
+
+  setDatabaseData = (data) => {
+    console.log("database_data:", data)
+    for (let table in data) {
+      this.setState({
+        tables: [...this.state.tables, table],
+        columns: [...this.state.columns, data[table]]
+      })
+    }
+    console.log("tables: ", this.state.tables);
+    console.log("columns: ", this.state.columns);
+  };
+
   setMetadata = (header, data)=> {
+    console.log("data1: ", data);
     let new_header =  header.filter(function (s) {
       return s && s.trim();
     });
     this.setState({
       header: Array.from(new Set(this.state.header.concat(new_header))),
+      data: this.state.data.concat(data)
+    },()=>{
+      console.log("data2: ", this.state.data)
     });
-    this.state.data.concat(data);
   };
 
   render(){
@@ -49,11 +74,20 @@ class CollectPage extends React.Component {
               <Row>
                 <Col span={1} />
                 <Col span={8} >
-                  <UploadFile passMetadata={(header, data)=> {this.setMetadata(header, data)}}/>
+                  <UploadFile passMetadata={(header, data)=> {this.setMetadata(header, data)}}
+                              passTabkey={(key) => {this.setTabKey(key)}}
+                              passDatabaseData={(data) => {this.setDatabaseData(data)}}
+                  />
                 </Col>
                 <Col span={1} />
                 <Col span={12} >
-                  <ExtractMeta parentHeader={this.state.header} parentData={this.state.data}/>
+                  {
+                    this.state.tab_key === 1 ?
+                        <ExtractSingleMeta parentHeader={this.state.header} parentData={this.state.data} />
+                        :
+                        <ExtractMultiMeta tables={this.state.tables} columns={this.state.columns}/>
+                  }
+
                 </Col>
               </Row>
             </Content>
