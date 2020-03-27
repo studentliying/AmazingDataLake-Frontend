@@ -15,27 +15,18 @@ class UploadFile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      header:[],
-      data:[],
+      headers:[],
+      datas:[],
+      filenames:[],
       host: "localhost",
       port: "3306",
       user: "root",
       password: "",
       database: "",
+      fileListExist: false
     };
   }
 
-  onChange = (info) => {
-    if (info.file.status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} 上传成功`);
-
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} 上传失败`);
-    }
-  };
 
   tabChange = (e) => {
     console.log(e);
@@ -74,32 +65,32 @@ class UploadFile extends React.Component {
 
   getTextInfo = (file) => {
     const reader = new FileReader();
-    reader.readAsText(file, "gb2312");
-
-    let workbook;
+    reader.readAsText(file, "utf-8");
     reader.onload = (e) => {
       let targetNum = e.target.result;
-      workbook = XLSX.read(targetNum, {type: 'string'});
-
-      console.log("workbook: ", workbook);
       let csvarry = targetNum.split("\r\n");
-      let datas = [];
-      let headers = csvarry[0].split(",");
+      let header = csvarry[0].split(",");
+      let file_data = [];
       for (let i = 1; i < csvarry.length; i++) {
-        let data = {};
+        let row_data = {};
         let temp = csvarry[i].split(",");
         for (let j = 0; j < temp.length; j++) {
-          data[headers[j]] = temp[j];
+          row_data[header[j]] = temp[j];
         }
-        datas.push(data);
+        file_data.push(row_data);
       }
-      this.props.passMetadata(headers, datas);
       this.setState({
-        header: headers,
-        data: datas,
+        headers: [...this.state.headers, header],
+        datas:[...this.state.datas, file_data],
+        filenames:[...this.state.filenames, file.name]
+      }, ()=>{
+        this.props.passMetadata(this.state.headers, this.state.datas, this.state.filenames);
+        message.success(`${file.name}上传成功`);
       })
     };
-    return true;
+
+    return false;
+
   };
 
   handleConnectDatabase = () =>{
@@ -137,15 +128,15 @@ class UploadFile extends React.Component {
         <Card title="数据采集"
               headStyle={{backgroundColor:"#d6e4ff", fontSize:'20px', fontWeight:'700'}}
               bodyStyle={{backgroundColor:"#f0f5ff"}}>
-          <Tabs defaultActiveKey="1" style={{marginTop:"-8%"}} size="large" onChange={this.tabChange}>
-            <TabPane tab="上传文件" key="1">
-              <Upload name="file" onChange={this.onChange} beforeUpload={this.getTextInfo}
-                      action='https://www.mocky.io/v2/5cc8019d300000980a055e76'>
-                <br/>
+          <br/>
+          <Tabs defaultActiveKey="1"  style={{marginTop:"-5%"}} size="large" onChange={this.tabChange}>
+            <TabPane tab="上传文件"  key="1">
+              <Upload name="file"  multiple={true}  beforeUpload={this.getTextInfo}>
                 <Button>
                   <UploadOutlined /> 点击上传
                 </Button>
-                <p style={{padding:'8px 1px'}}>提示：可上传csv、json格式文件或图片</p>
+                &nbsp;&nbsp;
+                <span > 可上传csv、json格式文件或图片 </span>
               </Upload>
             </TabPane>
             <TabPane tab="连接数据库" key="2">
@@ -190,7 +181,7 @@ class UploadFile extends React.Component {
                 确认连接
               </Button>
             </TabPane>
-          </Tabs>,
+          </Tabs>
         </Card>
     )}
 }

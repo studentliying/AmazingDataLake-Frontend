@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 import Sidebar from '../Components/Navigation/Sidebar.js';
 import CustomHeader from '../Components/Navigation/Header.js';
 import UploadFile from '../Components/Collect/UploadFile.js';
-import ExtractSingleMeta from '../Components/Collect/ExtractSingleMeta.js';
-import ExtractMultiMeta from "../Components/Collect/ExtractMultiMeta.js";
+import ExtractFileMeta from '../Components/Collect/ExtractFileMeta.js';
+import ExtractDatabaseMeta from "../Components/Collect/ExtractDatabaseMeta.js";
 
 const {Footer, Content, Sider} = Layout;
 
@@ -16,11 +16,13 @@ class CollectPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      header:[],
-      data:[],
+      headers:[],
+      datas:[],
+      filenames:[],
       tab_key: 1,
       tables:[],
       columns:[],
+      single_data: true
     };
   }
 
@@ -42,17 +44,23 @@ class CollectPage extends React.Component {
     console.log("columns: ", this.state.columns);
   };
 
-  setMetadata = (header, data)=> {
-    console.log("data1: ", data);
-    let new_header =  header.filter(function (s) {
-      return s && s.trim();
-    });
+  setMetadata = (header, data, filenames)=> {
     this.setState({
-      header: Array.from(new Set(this.state.header.concat(new_header))),
-      data: this.state.data.concat(data)
-    },()=>{
-      console.log("data2: ", this.state.data)
-    });
+      headers: header,
+      datas: data,
+      filenames: filenames
+    })
+    //   let new_header =  header.filter(function (s) {
+    //     return s && s.trim();
+    //   });
+    //   this.setState({
+    //     header: Array.from(new Set(this.state.header.concat(new_header))),
+    //     data: this.state.data.concat(data)
+    //   },()=>{
+    //     console.log("data2: ", this.state.data)
+    //   });
+    // })
+
   };
 
   render(){
@@ -73,19 +81,26 @@ class CollectPage extends React.Component {
               </Breadcrumb>
               <Row>
                 <Col span={1} />
-                <Col span={8} >
-                  <UploadFile passMetadata={(header, data)=> {this.setMetadata(header, data)}}
+                <Col span={20} >
+                  <UploadFile passMetadata={(header, data, filenames)=> {this.setMetadata(header, data, filenames)}}
                               passTabkey={(key) => {this.setTabKey(key)}}
                               passDatabaseData={(data) => {this.setDatabaseData(data)}}
                   />
                 </Col>
-                <Col span={1} />
-                <Col span={12} >
+              </Row>
+              <br/>
+              <Row>
+                <Col span={1}/>
+                <Col span={20} >
                   {
                     this.state.tab_key === 1 ?
-                        <ExtractSingleMeta parentHeader={this.state.header} parentData={this.state.data} />
+                        <ExtractFileMeta
+                            parentHeader={this.state.headers}
+                            parentData={this.state.datas}
+                            parentFilenames={this.state.filenames}
+                        />
                         :
-                        <ExtractMultiMeta tables={this.state.tables} columns={this.state.columns}/>
+                        <ExtractDatabaseMeta tables={this.state.tables} columns={this.state.columns}/>
                   }
 
                 </Col>

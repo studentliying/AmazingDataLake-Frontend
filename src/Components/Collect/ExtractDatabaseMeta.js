@@ -7,7 +7,7 @@ import {server} from '../../Utils/Constant';
 
 const CheckboxGroup = Checkbox.Group;
 
-class ExtractMultiMeta extends React.Component {
+class ExtractDatabaseMeta extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +57,7 @@ class ExtractMultiMeta extends React.Component {
       tables: this.props.tables,
       columns: this.state.checkedList
     };
-    fetch(server + "/rdf/save_mysql" , {
+    fetch(server + "/rdf/from_mysql" , {
       method: 'POST',
       body: JSON.stringify(body),
       mode: 'cors',
@@ -161,4 +161,4 @@ class ExtractMultiMeta extends React.Component {
     )}
 }
 
-export default ExtractMultiMeta;
+export default ExtractDatabaseMeta;
