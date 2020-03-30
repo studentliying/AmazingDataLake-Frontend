@@ -12,7 +12,7 @@ class Sidebar extends React.Component {
     super(props);
     this.state = {
       collapsed: false,
-      selectedKey: 4
+      selectedKey: 1
     };
   }
 
