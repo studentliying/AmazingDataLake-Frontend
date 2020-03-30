@@ -34,7 +34,7 @@ class Sidebar extends React.Component {
       <Menu
           onClick={this.handleClick}
           style={{ backgroundColor:'#f0f5ff', width:'256' }}
-          selectedKeys={[this.state.selectedKey]}
+          selectedKeys={[this.props.selected]}
           mode="inline"
           inlineCollapsed={this.state.collapsed}
       >
@@ -54,19 +54,19 @@ class Sidebar extends React.Component {
         <Menu.Item key="2" style={{height:'60px'}} className="customMenuItem">
           <PartitionOutlined style={{ fontSize:'20px', color:'#030852'}}/>
           &nbsp;&nbsp;&nbsp;
-          <span style={{ fontSize:'20px', fontWeight:'700', color:'#030852'}}>主题划分</span>
+          <span style={{ fontSize:'20px', fontWeight:'700', color:'#030852'}}>知识展示</span>
         </Menu.Item>
         <Menu.Item key="3" style={{height:'60px'}} className="customMenuItem">
           <DeploymentUnitOutlined style={{ fontSize:'20px', color:'#030852'}}/>
           &nbsp;&nbsp;&nbsp;
-          <span style={{ fontSize:'20px', fontWeight:'700', color:'#030852'}}>查询分析</span>
+          <span style={{ fontSize:'20px', fontWeight:'700', color:'#030852'}}>主题划分</span>
         </Menu.Item>
         <Menu.Item key="4" style={{height:'60px'}} className="customMenuItem">
           <AreaChartOutlined style={{ fontSize:'20px', color:'#030852'}}/>
           &nbsp;&nbsp;&nbsp;
           <span style={{ fontSize:'20px', fontWeight:'700', color:'#030852'}}>状态监控</span>
         </Menu.Item>
-        <h1 style={{ height:'300px'}}/>
+        <h1 style={{ height:'400px'}}/>
       </Menu>
     );
   }

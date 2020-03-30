@@ -61,6 +61,11 @@ class ExtractFileMeta extends React.Component {
 
   };
 
+  handleViewExtractionResult = () =>{
+    window.location.href = "/data-visualization";
+  };
+
+
   handleMultiCard = () =>{
     let cards = [];
     for (let i = 0; i < this.props.parentHeader.length; i++) {
@@ -96,7 +101,7 @@ class ExtractFileMeta extends React.Component {
                       status="success"
                       title="知识抽取已完成"
                       extra={[
-                        <Button type="primary" key="console">
+                        <Button type="primary" onClick={this.handleViewExtractionResult}>
                           前往查看抽取结果
                         </Button>,
                       ]}

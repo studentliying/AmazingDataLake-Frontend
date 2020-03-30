@@ -16,7 +16,7 @@ class HomePage extends React.Component {
           <CustomHeader/>
           <Layout>
             <Sider >
-              <Sidebar/>
+              <Sidebar selected="1"/>
             </Sider>
 
           </Layout>

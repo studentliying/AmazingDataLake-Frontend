@@ -69,7 +69,7 @@ class CollectPage extends React.Component {
           <CustomHeader/>
           <Layout>
             <Sider>
-                <Sidebar/>
+                <Sidebar selected="1"/>
             </Sider>
             <Content>
               <Breadcrumb style={{ margin: '16px 60px', fontSize:'16px' }}>
