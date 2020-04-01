@@ -46,16 +46,17 @@ class ExtractFileMeta extends React.Component {
           contentType:"application/json"
         }
       })
-          .then((response) => {
+          .then(response => {
             console.log("response: ", response);
             if (response.status === 200) {
               this.setState({
                 result: true
               })
             }
+            return response.text();
           })
-          .then(function (result) {
-            console.log("result: ", result);
+          .then(res => {
+            console.log("result: ", res);
           })
     })
 

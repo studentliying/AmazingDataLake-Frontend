@@ -3,9 +3,10 @@
  */
 import React, {Component} from 'react';
 import * as d3 from "d3";
+import {server} from '../../Utils/Constant';
 
 const WIDTH = 1150;
-const HEIGHT = 700;
+const HEIGHT = 600;
 const R = 30;
 let simulation;
 
@@ -24,24 +25,30 @@ class NeoGraph extends Component {
   getData = ()=> {
     let nodes = [];
     let edges = [];
-    nodes.push(
-        {
-          id: 1,
-          name: "node1", // 节点名称
-        },
-    );
-    nodes.push({
-      id: 2,
-      name: "node2",
+    fetch(server + "/graph/get_all_data" , {
+      method: 'GET',
+      mode: 'cors',
+      header:{
+        contentType:"application/json"
+      }
     })
-    edges.push({
-      id: 3,
-      source: 1,
-      target: 2,
-      tag: "sb"
-    });
-
-    this.drawNeoGraph(nodes, edges);
+        .then(response => {
+          console.log("response: ", response);
+          return response.json();
+        })
+        .then(res => {
+          console.log("result: ", res);
+          for (let i = 0; i < 208; i ++) {
+            let entity = res[i];
+            console.log("entity: ", entity)
+            if (entity["type"] === "node"){
+              nodes.push(entity);
+            } else {
+              edges.push(entity);
+            }
+          }
+          this.drawNeoGraph(nodes, edges);
+        });
   };
 
   drawNeoGraph = (nodes, edges) =>{
@@ -104,7 +111,7 @@ class NeoGraph extends Component {
         .attr('d', (d) => { return d && 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target.y; }) // 遍历所有数据，d表示当前遍历到的数据，返回绘制的贝塞尔曲线
         .attr('id', (d, i) => { return i && 'edgepath' + i; }) // 设置id，用于连线文字
         .attr('marker-end', 'url(#arrow)') // 根据箭头标记的id号标记箭头
-        .style('stroke', '#000') // 颜色
+        .style('stroke', '#bfbfbf') // 颜色
         .style('stroke-width', 1); // 粗细
     const defs = g.append('defs'); // defs定义可重复使用的元素
     const arrowheads = defs.append('marker') // 创建箭头
@@ -120,7 +127,7 @@ class NeoGraph extends Component {
         .attr('orient', 'auto'); // 绘制方向，可设定为：auto（自动确认方向）和 角度值
     arrowheads.append('path')
         .attr('d', 'M0,0 L0,10 L10,5 z') // d: 路径描述，贝塞尔曲线
-        .attr('fill', '#000'); // 填充颜色
+        .attr('fill', '#bfbfbf'); // 填充颜色
 
     const nodesCircle = svg.select('g')
         .selectAll('circle')
@@ -128,8 +135,8 @@ class NeoGraph extends Component {
         .enter()
         .append('circle') // 创建圆
         .attr('r', 30) // 半径
-        .style('fill', '#9FF') // 填充颜色
-        .style('stroke', '#0CF') // 边框颜色
+        .style('fill', '#ffccc7') // 填充颜色
+        .style('stroke', '#ffccc7') // 边框颜色
         .style('stroke-width', 2) // 边框粗细
         .on('click', (node) => { // 点击事件
           console.log('click');
@@ -143,10 +150,13 @@ class NeoGraph extends Component {
         .append('text')
         .attr('dy', '.3em') // 偏移量
         .attr('text-anchor', 'middle') // 节点名称放在圆圈中间位置
-        .style('fill', 'black') // 颜色
+        .style('fill', '#595959') // 颜色
         .style('pointer-events', 'none') // 禁止鼠标事件
         .text((d) => { // 文字内容
-          return d && d.name; // 遍历nodes每一项，获取对应的name
+          if (d.name !== "")
+            return d && d.name; // 遍历nodes每一项，获取对应的name
+          else
+            return d && d.id;
         });
 
     const edgesText = svg.select('g').selectAll('.edgelabel')
@@ -155,7 +165,8 @@ class NeoGraph extends Component {
         .append('text') // 为每一条连线创建文字区域
         .attr('class', 'edgelabel')
         .attr('dx', 80)
-        .attr('dy', 0);
+        .attr('dy', 0)
+        .style("fill", "#595959");
     edgesText.append('textPath')// 设置文字内容
         .attr('xlink:href', (d, i) => { return i && '#edgepath' + i; }) // 文字布置在对应id的连线上
         .style('pointer-events', 'none')
